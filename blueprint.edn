@@ -1,0 +1,12 @@
+{:itonami.blueprint/id "cloud-itonami-iso3166-jpn-moe"
+ :itonami.blueprint/name "Independent MOE Environmental-Assessment & Waste-Permit Compliance Service — Japan (MOE)"
+ :itonami.blueprint/iso3166 "JPN-MOE"
+ :itonami.blueprint/iso3166-parent "JPN"
+ :itonami.blueprint/ooyake-id "gov.jpn.moe"
+ :itonami.blueprint/domain :public-sector/moe-environmental-compliance
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:environmental-review-clarity :waste-permit-access :public-spend-transparency]
+ :itonami.blueprint/governor :environmental-compliance-governor
+ :itonami.blueprint/robotics false
+ :itonami.blueprint/required-technologies [:identity :forms :dmn :bpmn :audit-ledger]
+ :itonami.blueprint/status :public-oss}
