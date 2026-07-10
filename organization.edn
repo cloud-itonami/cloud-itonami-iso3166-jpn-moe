@@ -1,3 +1,13 @@
 ;; Real-world organization location / contact.
 ;; :head-role is institutional title only — no personal names.
-{:contact-page "https://www.env.go.jp/", :ooyake-id "gov.jpn.moe", :sourced-from "com-etzhayyim-ooyake gov-units (verbatim where present)", :head-role-note "institutional office title only; personal names of current office-holders are intentionally NOT stored", :official-url "https://www.env.go.jp/", :head-role "環境大臣", :hq {:last-verified "2026-06-02", :phone "03-3581-3351", :line-en "1-2-2 Kasumigaseki, Chiyoda-ku, Tokyo (Central Gov't Bldg No.5)", :line-local "東京都千代田区霞が関1-2-2 中央合同庁舎第5号館", :postal-code "100-8975", :kind "headquarters", :provenance "https://www.env.go.jp/", :hours "平日 9:30-18:15", :sourcing "representative", :country "jpn"}, :wikidata "Q1125558", :name-en "Ministry of the Environment", :name-local "環境省"}
+{:ooyake-id "gov.jpn.moe"
+  :official-url "https://www.env.go.jp/"
+  :name-en "Ministry of the Environment"
+  :name-local "環境省"
+  :wikidata "Q1125558"
+  :head-role "環境大臣"
+  :head-role-note "institutional office title only; personal names of current office-holders are intentionally NOT stored"
+  :contact-page "https://www.env.go.jp/"
+  :sourced-from "com-etzhayyim-ooyake gov-units (verbatim where present)"
+  :hq {:postal-code "100-8975" :line-local "東京都千代田区霞が関1-2-2 中央合同庁舎第5号館" :line-en "1-2-2 Kasumigaseki, Chiyoda-ku, Tokyo (Central Gov't Bldg No.5)" :country "jpn" :phone "03-3581-3351" :hours "平日 9:30-18:15" :kind "headquarters" :provenance "https://www.env.go.jp/" :last-verified "2026-06-02" :sourcing "representative"}
+}
