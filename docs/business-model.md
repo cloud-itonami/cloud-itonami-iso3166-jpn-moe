@@ -1,24 +1,46 @@
-# Business Model: Independent MOE Environmental-Assessment & Waste-Permit Compliance Service — Japan (MOE)
+# Business Model: Independent MOE Green-Purchasing & Environmentally-Conscious-Contracts Compliance Service — Japan (MOE)
+
+Implementation: `src/greenprocurement/` — see README.md's
+Implementation section. The Trust Controls below are enforced in code
+by `greenprocurement.governor` (spec-basis/no-fabrication HARD check,
+conformity-confirmation-missing HARD check, environmental-
+documentation-missing HARD check, engagement-fee-mismatch check,
+confidence-floor/actuation gate, double-draft/double-submit guards)
+and `greenprocurement.phase` (`:filing/submit` absent from every
+phase's `:auto` set).
 
 ## Classification
 
 - Repository: `cloud-itonami-iso3166-jpn-moe`
 - ISO 3166 (agency-level): `JPN-MOE`, parent `JPN`
 - Ooyake cross-reference: `gov.jpn.moe` (Ministry of the Environment / 環境省)
-- Activity: environmental impact assessment (環境影響評価法/環境アセスメント) requirements for a public infrastructure project, and waste-management permit (廃棄物処理法) compliance for an operator handling collection, transport, or disposal under a public contract (complementing cloud-itonami-cofog-05.1's waste-collection theme with the national regulatory-agency side)
-- Social impact: [:environmental-review-clarity :waste-permit-access :public-spend-transparency]
+- Activity: グリーン購入法 (Green Purchasing Law) designated-procurement-item
+  conformity confirmation for an operator selling into a category covered
+  by MOE's Basic Policy (22 fields / 287 items per the 2023-02-24 Cabinet
+  decision), and 環境配慮契約法 (Environmentally-Conscious Contracts Law)
+  総合評価 (comprehensive-evaluation) contract-bid documentation for an
+  operator bidding on a public contract where price and environmental
+  performance are evaluated together
+- Social impact: [:green-procurement-clarity :sustainable-contracting-access :public-spend-transparency]
 
 ## Customer
 
-- an operator whose public infrastructure project triggers an environmental impact assessment (環境アセスメント) requirement
-- an operator handling waste collection, transport, or disposal under a public contract requiring a Waste Management Act (廃棄物処理法) permit
-- a foreign environmental-services vendor confirming MOE permit prerequisites before bidding
+- a manufacturer, importer, or seller of goods/services that may fall
+  under a グリーン購入法 designated-procurement-item category, confirming
+  conformity to the 判断の基準 (criteria for judgment) before claiming it
+- an operator bidding on a public contract subject to 環境配慮契約法's
+  総合評価落札方式 (comprehensive-evaluation bid-award method), preparing
+  the environmental-performance documentation the evaluation requires
+- a foreign eco-friendly-goods vendor confirming MOE Green Purchasing Law
+  prerequisites before bidding into a Japanese public-sector contract
 
 ## Offer
 
-- environmental impact assessment (環境アセスメント) requirement-screening walkthrough
-- Waste Management Act (廃棄物処理法) permit classification and application checklist
-- ongoing regulatory-change monitoring for MOE standard updates
+- グリーン購入法 designated-procurement-item conformity-confirmation
+  walkthrough (判断の基準 checklist)
+- 環境配慮契約法 総合評価 (comprehensive-evaluation) bid-documentation
+  checklist
+- ongoing regulatory-change monitoring for MOE Basic Policy revisions
 - compliance-audit export package for the operator's own records
 
 ## Revenue
@@ -30,7 +52,7 @@
 ## Trust Controls
 
 - any actual filing, registration, or compliance-program submission
-  requires Environmental Compliance Governor clearance and always escalates to human
+  requires Green Procurement Compliance Governor clearance and always escalates to human
   sign-off (`:filing/submit` is never automated at any phase)
 - a false or fabricated regulatory-requirement claim is a HARD hold that
   cannot be overridden by human approval alone — it must be corrected
@@ -63,8 +85,20 @@
   (incorporation, ISIC 6910) — a prior, different regulatory phase (company
   law). This blueprint assumes incorporation is already done and handles
   MOE-specific compliance (a different regulatory domain).
-- **`cloud-itonami-cofog-05.1`** (Independent Municipal Waste Collection
-  Robotics, MOE blueprint only): a jurisdiction-agnostic LOCAL operator
-  template for the waste-collection function itself. This blueprint is the
-  NATIONAL regulatory-agency side (MOE permits) an operator needs
-  regardless of which municipality it serves.
+
+## Domain note (reconciled during implementation)
+
+This blueprint's original text (pre-implementation) described 環境影響評価法
+(environmental impact assessment) and 廃棄物処理法 (waste-management permit)
+compliance, complementing `cloud-itonami-cofog-05.1`'s waste-collection
+theme. The verified research dossier available for the implementation pass
+that produced `src/greenprocurement/` covered only グリーン購入法 (Green
+Purchasing Law) and 環境配慮契約法 (Environmentally-Conscious Contracts Law)
+against `env.go.jp`/`gpn.jp` sources — this actor family's governing
+principle (see Trust Controls above) is to never model a regulatory
+requirement without a verified source, so the implemented scope followed
+the dossier rather than inventing impact-assessment/waste-permit specifics
+with no verified sourcing. A future pass with a verified dossier for
+environmental impact assessment and/or waste-management permits could add
+those as additional tracks in `greenprocurement.facts`, or as a sibling
+blueprint.
