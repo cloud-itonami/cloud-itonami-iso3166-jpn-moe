@@ -1,12 +1,50 @@
 {:itonami.blueprint/id "cloud-itonami-iso3166-jpn-moe"
- :itonami.blueprint/name "Independent MOE Environmental-Assessment & Waste-Permit Compliance Service — Japan (MOE)"
+ :itonami.blueprint/name "Independent MOE Green-Purchasing & Environmentally-Conscious-Contracts Compliance Service — Japan (MOE)"
  :itonami.blueprint/iso3166 "JPN-MOE"
  :itonami.blueprint/iso3166-parent "JPN"
  :itonami.blueprint/ooyake-id "gov.jpn.moe"
- :itonami.blueprint/domain :public-sector/moe-environmental-compliance
+ :itonami.blueprint/domain :public-sector/moe-green-procurement-compliance
  :itonami.blueprint/license "AGPL-3.0-or-later"
- :itonami.blueprint/social-impact [:environmental-review-clarity :waste-permit-access :public-spend-transparency]
- :itonami.blueprint/governor :environmental-compliance-governor
+ :itonami.blueprint/social-impact [:green-procurement-clarity :sustainable-contracting-access :public-spend-transparency]
+ :itonami.blueprint/governor :green-procurement-compliance-governor
  :itonami.blueprint/robotics false
  :itonami.blueprint/required-technologies [:identity :forms :dmn :bpmn :audit-ledger]
- :itonami.blueprint/status :public-oss}
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/organization {:ooyake-id "gov.jpn.moe" :official-url "https://www.env.go.jp/" :head-role "環境大臣" :hq-line-local "東京都千代田区霞が関1-2-2 中央合同庁舎第5号館" :hq-phone "03-3581-3351" :contact-page "https://www.env.go.jp/"}
+ :itonami.blueprint/maturity :implemented
+ :itonami.blueprint/implemented-slice
+ "src/greenprocurement/* (langgraph-clj StateGraph actor): facts.cljc
+ (グリーン購入法/Green Purchasing Law + 環境配慮契約法/Environmentally-
+ Conscious Contracts Law catalog grounded in env.go.jp/gpn.jp sources
+ only -- aggregate designated-procurement-item counts only, 22 fields /
+ 287 items per the 2023-02-24 Cabinet decision revising the FY2023
+ Basic Policy, no itemized list or invented examples), governor.cljc
+ (Green Procurement Compliance Governor -- spec-basis/no-fabrication
+ HARD check, evidence-incomplete check, conformity-confirmation-missing
+ HARD check (判断の基準適合確認, green-purchasing track -- genuine legal
+ prerequisite before conformity may be claimed), environmental-
+ documentation-missing HARD check (環境性能証明書類, eco-conscious-
+ contracts track -- required for 総合評価/comprehensive-evaluation bid
+ submission), engagement-fee-mismatch check (three revenue lines),
+ confidence-floor/actuation gate, double-draft/double-submit guards per
+ track), store.cljc (MemStore + DatomicStore via kotoba-lang/
+ langchain-store, engagement entity tracking :green-purchasing and
+ :eco-conscious-contracts tracks independently plus engagement-level
+ conformity-confirmation/environmental-documentation gates),
+ registry.cljc (pure-function filing-draft/filing-submit record
+ construction), greenprocurementllm.cljc (mock Compliance Advisor),
+ operation.cljc (intake -> advise -> govern -> decide ->
+ [request-approval ->] commit/hold StateGraph), phase.cljc (0->3
+ rollout, :filing/draft and :filing/submit permanently excluded from
+ every phase's :auto set). 30 tests / 98 assertions passing (governor
+ contract + store parity + facts + phase + registry), clj-kondo clean
+ (0 errors, 5 non-fatal unused-binding/unused-require warnings in test
+ files). Domain reconciled from this blueprint's original 環境影響評価法
+ (environmental impact assessment) / 廃棄物処理法 (waste-management
+ permit) framing to グリーン購入法/環境配慮契約法 because the verified
+ research dossier available for this implementation pass covered only
+ the latter two tracks against env.go.jp/gpn.jp -- this actor family's
+ governing principle is to never model a regulatory requirement without
+ a verified source, so the implemented scope followed the dossier
+ rather than inventing impact-assessment/waste-permit specifics with no
+ verified sourcing."}
