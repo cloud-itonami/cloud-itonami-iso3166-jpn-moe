@@ -1,0 +1,310 @@
+;; Regulatory source register for the JPN-MOE green-procurement compliance
+;; service: the two statutes the actor implements against -- グリーン購入法
+;; (Green Purchasing Law) and 環境配慮契約法 (Eco-Contracts Law) -- plus the
+;; Act that constitutes the ministry, and the ministry pages that publish
+;; both schemes' basic policies.
+;;
+;; README.md and blueprint.edn ground the actor in env.go.jp sources only.
+;; Until this file existed there was no such list, so no claim in this
+;; repository could be traced to anything. This is that list.
+;;
+;; Shape is tx-data (a vector of entity maps), like every other EDN corpus in
+;; this workspace, so it loads with
+;;   (d/transact conn (edn/read-string (slurp "facts.edn")))
+;; :source/id is the join key. A law or page not in this table has NO
+;; spec-basis for this repository -- extend the table, never invent an id or
+;; a URL.
+;;
+;; VERIFIED BY `nbb scripts/verify-facts.cljs`, which re-fetches every entry.
+;; Each carries a :source/verify tag naming WHICH check establishes it:
+;;
+;;   :e-gov-law-id   Resolve the law id through the e-Gov law API and require
+;;                   the title and the law number to still match. HTTP status
+;;                   is never consulted here and must not be: laws.e-gov.go.jp
+;;                   answers HTTP 200 for /law/<anything>, rendering "not
+;;                   found" client-side, so the /law/ URL cannot tell a real
+;;                   citation from an invented one. This register's own first
+;;                   draft proved the point: three plausible ids built from
+;;                   the year+number convention (412AC0000000100 et al.)
+;;                   returned total_count 0 through the API while their /law/
+;;                   URLs would have loaded -- the ids e-Gov actually holds
+;;                   carry an extra revision digit the convention does not
+;;                   predict.
+;;
+;;   :page-identity  Fetch and require four things together: a 2xx, a final
+;;                   URL that is still the page asked for, the declared
+;;                   charset, and the <title> recorded below.
+;;
+;;   :page-text      All of :page-identity, plus every string in
+;;                   :page/must-contain present in the de-tagged body.
+;;
+;; HOST ASSUMPTIONS ARE MEASURED AT RUN TIME, NOT DATED IN A COMMENT.
+;; The :host-behaviour entities below say what each host does with a path
+;; that does not exist, and the verifier re-fetches one on every run.
+;;
+;; MEASURED 2026-08-31: www.env.go.jp answers HTTP 404 -- not the 403 the
+;; sibling METI register measures on all four of its hosts -- with a real
+;; 45364-byte お探しのページは見つかりません page at the requested URL,
+;; whose title differs from the ministry home title, so status and title
+;; both separate a real page from an invented one. No bot challenge was seen
+;; on either host here across the probes that built this register. That is a
+;; measurement of this run, not a property: the entity below pins the status
+;; and the run re-measures it.
+;;
+;; THE SECOND HOST IS A MOE-AFFILIATED BODY, NOT ANOTHER BUREAU OF THE
+;; MINISTRY. 環境省 has no extra-ministerial bureaux on their own hosts --
+;; unlike METI's 特許庁/中小企業庁/資源エネルギー庁 -- and the verifier
+;; refuses a register whose :page-identity entries all sit on one host,
+;; because the four page self-tests aimed at a single host are exactly the
+;; burst that trips a bot challenge. The second host cited here is
+;; www.nies.go.jp, 国立環境研究所 -- the national research institute this
+;; ministry supervises. It is a public procurement entity itself, and one of
+;; the 国等 the Eco-Contracts Law addresses. Its home page is cited at
+;; identity level only.
+;;
+;; :source/covers says why an entry is in a green-procurement register.
+;; Claims stop at the level actually checked -- law identity, and for the
+;; pages the title, the URL, the charset and the strings read on
+;; 2026-08-31. No article text and no PDF is asserted, because none was
+;; read.
+
+[
+ ;; ── What each host does with a path that does not exist ────────────────────
+ ;; Re-measured on every run.
+
+ {:source/id "host.www-env-go-jp"
+  :source/kind :host-behaviour
+  :host/name "www.env.go.jp"
+  :host/missing-path :refuses
+  :host/missing-status 404
+  :source/note "環境省 itself. A nonexistent path answers HTTP 404 -- NOT the
+                403 all four METI-family hosts measure -- with a 45364-byte
+                お探しのページは見つかりません page served at the requested
+                URL, titled お探しのページは見つかりません | 環境省, which
+                differs from the home title 環境省へようこそ！, so both status
+                and title separate a real page from a soft 404. Measured
+                2026-08-31 with no bot challenge in front of it; the run
+                re-measures rather than trusting this note."}
+
+ {:source/id "host.www-nies-go-jp"
+  :source/kind :host-behaviour
+  :host/name "www.nies.go.jp"
+  :host/missing-path :refuses
+  :host/missing-status 404
+  :source/note "国立環境研究所. A nonexistent path answers HTTP 404 with a
+                24217-byte page titled 404 Not Found｜トップ｜国立環境研究所
+                -- a different title and byte count from the ministry host's
+                not-found page, on a different host. Only a real 2xx page
+                body for a path that does not exist is a failure here."}
+
+ ;; ── Statutes ───────────────────────────────────────────────────────────────
+
+ {:source/id "law.moe-establishment"
+  :source/kind :statute
+  :source/title "環境省設置法"
+  :source/publisher "e-Gov 法令検索 (Digital Agency)"
+  :source/url "https://laws.e-gov.go.jp/law/411AC0000000101"
+  :source/verify :e-gov-law-id
+  :egov/law-id "411AC0000000101"
+  :egov/law-title "環境省設置法"
+  :egov/law-num "平成十一年法律第百一号"
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:agency-mandate}
+  :source/note "The Act that constitutes 環境省. Identity only -- which duties
+                sit in which division is article text and is not asserted.
+                The id was NOT derivable from the year+number convention:
+                平成十一年法律第百一号 resolves through the API, while the
+                neighbouring numbers resolve to other ministries' statutes
+                (第九十一号 総務省設置法, 第九十八号 農林水産省設置法 --
+                both measured 2026-08-31)."}
+
+ {:source/id "law.green-purchasing"
+  :source/kind :statute
+  :source/title "国等による環境物品等の調達の推進等に関する法律"
+  :source/publisher "e-Gov 法令検索 (Digital Agency)"
+  :source/url "https://laws.e-gov.go.jp/law/412AC1000000100"
+  :source/verify :e-gov-law-id
+  :egov/law-id "412AC1000000100"
+  :egov/law-title "国等による環境物品等の調達の推進等に関する法律"
+  :egov/law-num "平成十二年法律第百号"
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:green-purchasing :designated-procurement-items}
+  :source/note "グリーン購入法, the statute the green-purchasing track of
+                this actor implements against. Two things the register pins
+                because the customary name does not say them: the title
+                e-Gov holds carries neither グリーン nor 購入, and the law id
+                carries an extra 1 (412AC**1**0000000100) where the plain
+                year+number form 412AC0000000100 answers total_count 0 --
+                measured, which is why the /law/ URL proves nothing. The
+                designated-procurement item list (特定調達品目) and the
+                基本方針 it lives in are article/decision text and are NOT
+                asserted; the ministry page below establishes where they are
+                published."}
+
+ {:source/id "law.eco-contracts"
+  :source/kind :statute
+  :source/title "国等における温室効果ガス等の排出の削減に配慮した契約の推進に関する法律"
+  :source/publisher "e-Gov 法令検索 (Digital Agency)"
+  :source/url "https://laws.e-gov.go.jp/law/419AC0100000056"
+  :source/verify :e-gov-law-id
+  :egov/law-id "419AC0100000056"
+  :egov/law-title "国等における温室効果ガス等の排出の削減に配慮した契約の推進に関する法律"
+  :egov/law-num "平成十九年法律第五十六号"
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:eco-conscious-contracts}
+  :source/note "環境配慮契約法, the statute the eco-conscious-contracts track
+                implements against. Again the customary name 環境配慮契約法
+                appears nowhere in the title e-Gov holds, and the id again
+                carries an extra revision digit the convention does not
+                predict. Identity only: the 総合評価 bid mechanism the
+                governor checks for is a feature of this scheme but is
+                article/基本方針 text and is NOT asserted here."}
+
+ {:source/id "law.eco-contracts-order"
+  :source/kind :statute
+  :source/title "国等における温室効果ガス等の排出の削減に配慮した契約の推進に関する法律第二条第三項の法人を定める政令"
+  :source/publisher "e-Gov 法令検索 (Digital Agency)"
+  :source/url "https://laws.e-gov.go.jp/law/419CO0000000344"
+  :source/verify :e-gov-law-id
+  :egov/law-id "419CO0000000344"
+  :egov/law-title "国等における温室効果ガス等の排出の削減に配慮した契約の推進に関する法律第二条第三項の法人を定める政令"
+  :egov/law-num "平成十九年政令第三百四十四号"
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:eco-conscious-contracts :agency-mandate}
+  :source/note "The Cabinet Order that names WHICH legal entities count as
+                国等 under the Eco-Contracts Law -- the very question a
+                green-procurement register's scope rests on. Linked from the
+                ministry's own グリーン契約 page. Identity only."}
+
+ ;; ── 環境省 pages ───────────────────────────────────────────────────────────
+
+ {:source/id "env.home"
+  :source/kind :agency-page
+  :source/title "環境省ホーム"
+  :source/publisher "環境省"
+  :source/url "https://www.env.go.jp/"
+  :source/verify :page-identity
+  :page/title "環境省へようこそ！"
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:agency-mandate}
+  :source/note "Front page. Its title carries the full-width ！ (U+FF01) and
+                no site-name suffix, unlike the two policy pages cited below
+                which both end in \" | 環境省\". A register that normalised
+                punctuation or appended a canonical suffix would compare
+                these as equal and stop being able to tell the front page
+                from a content page."}
+
+ {:source/id "env.green-purchasing"
+  :source/kind :agency-page
+  :source/title "グリーン購入について"
+  :source/publisher "環境省"
+  :source/url "https://www.env.go.jp/policy/hozen/green/g-law/"
+  :source/verify :page-text
+  :page/title "グリーン購入について | 環境省"
+  :page/must-contain ["グリーン購入とは？"
+                      "グリーン購入法基本方針"
+                      "特定調達品目"]
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:green-purchasing :designated-procurement-items}
+  :source/note "The ministry's グリーン購入法 page: where the 基本方針 and
+                the 特定調達品目 the actor's aggregate counts are grounded
+                are published. The strings pinned above include the scheme's
+                own name as the page introduces it and the term the item
+                counting rests on. The 基本方針 itself and the item list are
+                PDFs and are NOT read: this entry establishes where they are
+                published, not what they say."}
+
+ {:source/id "env.green-contracts"
+  :source/kind :agency-page
+  :source/title "グリーン契約（環境配慮契約）について"
+  :source/publisher "環境省"
+  :source/url "https://www.env.go.jp/policy/ga/"
+  :source/verify :page-text
+  :page/title "グリーン契約（環境配慮契約）について | 環境省"
+  :page/must-contain ["グリーン契約とは？"
+                      "環境配慮契約法"
+                      "基本方針"]
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:eco-conscious-contracts}
+  :source/note "The ministry's グリーン契約 page, publishing the 環境配慮契約法
+                基本方針 the eco-conscious-contracts track works against. The
+                page is titled グリーン契約（環境配慮契約） -- a pairing the
+                customary name alone does not give -- and it is also where
+                the Order above (第二条第三項の法人を定める政令) is linked,
+                which is how the register found a law id it would otherwise
+                have had to guess. The 基本方針 PDF is NOT read."}
+
+ ;; ── 国立環境研究所 page ────────────────────────────────────────────────────
+
+ {:source/id "nies.home"
+  :source/kind :agency-page
+  :source/title "国立環境研究所ホーム"
+  :source/publisher "国立環境研究所"
+  :source/url "https://www.nies.go.jp/"
+  :source/verify :page-identity
+  :page/title "国立環境研究所"
+  :source/retrieved-at "2026-08-31"
+  :source/covers #{:agency-mandate :eco-conscious-contracts}
+  :source/note "The MOE-supervised national research institute, cited to give
+                the page self-tests a second host -- a register whose
+                :page-identity entries all sit on one host is refused by the
+                verifier, because four self-test fetches aimed at one host is
+                the burst that trips a bot challenge. NIES is a public
+                procurement entity itself and one of the 国等 the Eco-Contracts
+                Law addresses, so the citation is not arbitrary even at
+                identity level. No content claim is made beyond identity."}
+
+ ;; ── What this register does not establish ──────────────────────────────────
+
+ {:source/id "register.coverage"
+  :source/kind :coverage
+  :coverage/entries 8
+  :coverage/by-verify {:e-gov-law-id 4 :page-identity 2 :page-text 2}
+  :coverage/verified-at "2026-08-31"
+  :coverage/covered #{:agency-mandate :green-purchasing
+                      :designated-procurement-items :eco-conscious-contracts}
+  :coverage/not-covered
+  ["Article text. All 4 statutes are established at identity level only --
+    title plus law number, resolved through the e-Gov API. No article,
+    paragraph or item is cited, so nothing here supports a claim about what
+    any of these laws requires."
+   "The グリーン購入法基本方針 and the 特定調達品目 item list. They are PDFs
+    behind the ministry page cited above; this register establishes where
+    they are published and that the 2026-02-03 revision happened as the page
+    announces it, not what the items are. The actor's aggregate
+    22-field / 287-item counts rest on the 2023-02-24 Cabinet decision per
+    blueprint.edn and are NOT re-established by this register."
+   "The 環境配慮契約法基本方針. Same shape: the page cited announces its
+    令和８年３月13日 revision; the PDF is not read."
+   "The グリーン購入法基本方針 revision history, the 特定調達品目検討会
+    agendas and the 説明会 materials. Linked from the cited page and not
+    surveyed."
+   "Every page on hosts other than the two cited. The ministry has no
+    extra-ministerial bureaux on their own hosts (unlike METI's family), so
+    the second host here is its supervised research institute; no regional
+    地方環境事務所 host exists to survey -- they live under www.env.go.jp."
+   "Therefore the whole of organization.edn is unverified by this register.
+    Its :hq block claims 〒100-8975, 東京都千代田区霞が関1-2-2 中央合同庁舎
+    第5号館, 03-3581-3351 and 平日 9:30-18:15 with :provenance
+    https://www.env.go.jp/ and :last-verified 2026-06-02. The home page this
+    register reads carries its title and nothing the register pins address
+    or phone. Nothing in organization.edn was confirmed and nothing in it
+    was corrected."
+   "Every PDF. Both 基本方針, the パンフレット and all eleven 分割版 sections
+    are PDFs. Not read."
+   "GPN (グリーン購入ネットワーク). It is an industry body the ministry's
+    scheme works with, not the authority, and a register of official sources
+    does not cite it -- same rule the sibling METI register applies to
+    CISTEC."
+   "How reliably the two cited hosts can be read in a tight loop. No
+    challenge was seen while this register was built, which is a statement
+    about this run, not about the hosts: the sibling register's hosts were
+    also clean until its own verifier's traffic tripped them."
+   "Whether any statute here is currently in force as amended. The e-Gov API
+    answers with a current revision title and number, which establishes
+    identity, not applicability on a given date."]
+  :source/note "This entity is checked against the file: the verifier compares
+                :coverage/entries and :coverage/by-verify with what it actually
+                read, so a source added without updating this block is a
+                failure rather than a silent drift."}
+]
