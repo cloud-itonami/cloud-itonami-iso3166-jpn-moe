@@ -1,5 +1,5 @@
 (ns greenprocurement.facts-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [greenprocurement.facts :as facts]))
 
 (deftest green-purchasing-has-spec-basis
